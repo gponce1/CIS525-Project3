@@ -286,6 +286,60 @@ The responsive layout was also tested using the iPhone 16 Pro Max device preset 
 
 ![TaskPad PHP mobile view](docs/screenshots/11-mobile.png)
 
+
+### 10.12 University Web Hosting and Deployment Status
+
+TaskPad PHP has also been deployed to the University of Michigan-Dearborn personal web hosting service.
+
+**Live Application:**
+
+https://www-personal.umd.umich.edu/~gponcec/taskpad/index.php
+
+The university hosting environment was successfully configured to execute PHP 8.2.35. The application loads correctly, including its HTML pages, CSS styling, navigation, task summary, and filtering interface.
+
+However, during deployment testing, I encountered a server-side file permission issue that prevents PHP from writing to the JSON storage file.
+
+The diagnostic tests confirmed:
+
+| Test | Result |
+|---|---|
+| PHP execution | Successful |
+| JSON data directory exists | YES |
+| JSON file exists | YES |
+| JSON file readable | YES |
+| JSON file writable | NO |
+| Private directory write test | FAILED |
+| Public directory write test | FAILED |
+
+As a result, tasks cannot currently be created, completed, or deleted on the university-hosted version because these operations require writing to the JSON file.
+
+**This issue is specific to the university hosting environment.** The application was successfully tested locally using PHP, including task creation, validation, filtering, completion, deletion, and JSON persistence.
+
+### Hosting Evidence
+
+The following screenshot shows the error displayed when attempting to create a task on the university server.
+
+![University hosting storage error](docs/screenshots/12-error-hosting.png)
+
+The next screenshot shows the server-side diagnostic results confirming the file permission restrictions.
+
+![University hosting permission diagnostic results](docs/screenshots/13-error-hosting-test.png)
+
+### IT Support Request
+
+I contacted the University of Michigan-Dearborn ITS Service Desk to request assistance with the PHP file write permissions.
+
+**ITS Support Ticket:** #24758098
+
+**Status:** Awaiting resolution.
+
+Since these permissions are controlled by the university hosting environment, I am unable to make the required server-side configuration changes myself.
+
+I am hoping the issue can be resolved before the instructor reviews the project so that the hosted application can be tested with full functionality.
+
+In the meantime, the GitHub repository includes the complete source code, UML diagrams, documentation, and screenshots demonstrating the application's functionality in the local development environment.
+
+
 ## 11. Project Notes
 
 - TaskPad PHP is an educational project for CIS 525.
