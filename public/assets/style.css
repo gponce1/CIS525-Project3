@@ -1,0 +1,582 @@
+/* TaskPad PHP - CIS 525 Project 3 */
+
+/* 1. Colors and general layout */
+:root {
+    --blue: #367bf5;
+    --blue-hover: #2566da;
+    --blue-light: #eaf2ff;
+    --background: #f6f8fc;
+    --white: #ffffff;
+    --text: #293241;
+    --muted: #778394;
+    --border: #e6eaf0;
+    --green: #23855a;
+    --red: #c8344b;
+    --table-blue: #3454d1;
+    --table-blue-hover: #2744b5;
+    --table-head: #f8f9fc;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    background: var(--background);
+    color: var(--text);
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* 2. Header and navigation */
+header {
+    grid-column: 1 / -1;
+    padding: 16px 28px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+}
+
+header h1 {
+    margin: 0;
+    color: var(--blue);
+    font-size: 22px;
+    font-weight: 650;
+}
+
+header p {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.sidebar {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 28px 14px;
+    background: var(--white);
+    border-right: 1px solid var(--border);
+}
+
+.sidebar-heading {
+    margin: 0 12px 18px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nav-link {
+    display: block;
+    padding: 12px 15px;
+    border-radius: 8px;
+    color: #5e6876;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.nav-link:hover { background: #f3f6fb; }
+
+.nav-link.active {
+    background: var(--blue-light);
+    color: var(--blue);
+    font-weight: 600;
+}
+
+/* 3. Main sections and typography */
+main {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    max-width: 1200px;
+    min-width: 0;
+    margin: 0 auto;
+    padding: 35px;
+}
+
+main > section {
+    margin-bottom: 22px;
+    padding: 24px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+/* The opening section contains the page title (and Add Task link). */
+main > section:first-child {
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+h2 {
+    margin: 0 0 16px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+h3 { margin: 0 0 8px; font-size: 16px; }
+p { overflow-wrap: anywhere; }
+
+a { color: var(--blue); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Main Add Task link on index.php */
+main > section:first-child > a {
+    display: inline-block;
+    padding: 11px 20px;
+    border-radius: 7px;
+    background: var(--blue);
+    color: var(--white);
+    font-weight: 600;
+}
+
+main > section:first-child > a:hover {
+    background: var(--blue-hover);
+    text-decoration: none;
+}
+
+/* Put My Tasks and Add New Task on one line on wider screens. */
+@media (min-width: 650px) {
+    main > section:first-child > h2 { display: inline-block; margin: 0; }
+    main > section:first-child > a { float: right; }
+    main > section:first-child::after { content: ""; display: block; clear: both; }
+}
+
+/* 4. Forms: create.php and existing GET filters */
+form { display: grid; gap: 16px; }
+
+form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+label { font-size: 13px; font-weight: 600; }
+
+input[type="text"],
+input[type="search"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 10px 12px;
+    border: 1px solid #d8dee8;
+    border-radius: 7px;
+    background: var(--white);
+    color: var(--text);
+    font: inherit;
+}
+
+textarea { min-height: 110px; resize: vertical; }
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
+}
+
+button {
+    width: fit-content;
+    padding: 10px 18px;
+    border: 1px solid var(--blue);
+    border-radius: 7px;
+    background: var(--blue);
+    color: var(--white);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover { background: var(--blue-hover); }
+
+/* Give the create.php form its own clean card. */
+main > section:first-child > form {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+}
+
+main > section:first-child > form > div:last-child {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Summary counters */
+.task-summary > div {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.task-summary > div p {
+    margin: 0;
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #f8faff;
+    color: #465367;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Existing Search Tasks + Priority filters */
+.task-filters form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    gap: 16px;
+}
+
+.task-filters form > div:last-child {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Messages */
+.success-message,
+.error-message,
+[role="alert"] {
+    padding: 12px 16px;
+    border-radius: 7px;
+    margin: 14px 0;
+}
+
+.success-message {
+    background: #e9f7ef;
+    color: #17663f;
+    border: 1px solid #b7dfc8;
+}
+
+.error-message,
+[role="alert"] {
+    background: #fff0ef;
+    color: #ae2839;
+    border: 1px solid #efc6c3;
+}
+
+/* 5. Task List - adapted from your reference HTML */
+.task-list {
+    padding: 0;
+    overflow: hidden;
+    border-radius: 14px;
+    box-shadow: 0 1px 2px rgba(20, 28, 60, .04),
+                0 8px 24px -12px rgba(20, 28, 60, .12);
+}
+
+.task-list-heading { padding: 24px 24px 0; }
+
+.task-list-heading h2 {
+    margin: 0;
+    color: #1c2233;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.task-list-heading p {
+    margin: 4px 0 0;
+    color: #6b7389;
+    font-size: 13px;
+}
+
+/* All / Open / Completed: PHP GET links */
+.status-tabs {
+    display: inline-flex;
+    max-width: calc(100% - 48px);
+    margin: 20px 24px 18px;
+    padding: 3px;
+    gap: 2px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--table-head);
+}
+
+.status-tabs a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 7px;
+    color: #6b7389;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.status-tabs a:hover { color: #1c2233; }
+
+.status-tabs a.active {
+    background: var(--white);
+    color: #1c2233;
+    box-shadow: 0 1px 3px rgba(20, 28, 60, .12);
+}
+
+.status-tabs a span { font-size: 12px; font-weight: 500; }
+
+/* Table */
+.task-table-wrapper { width: 100%; overflow-x: auto; }
+
+.task-table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.task-table thead { background: var(--table-head); }
+
+.task-table th {
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    color: #6b7389;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.task-table td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border);
+    color: #1c2233;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+.task-table th:first-child,
+.task-table td:first-child { padding-left: 24px; }
+
+.task-table th:last-child,
+.task-table td:last-child { padding-right: 24px; }
+
+.task-table th:last-child { text-align: right; }
+.task-table tbody tr:last-child td { border-bottom: 0; }
+.task-table tbody tr:hover { background: var(--table-head); }
+
+/* Task title and description: no check or icon */
+.task-cell { display: block; }
+.task-text { min-width: 0; }
+
+.task-title-text {
+    color: #1c2233;
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.task-desc-text {
+    margin-top: 3px;
+    color: #6b7389;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.is-done .task-title-text {
+    color: #6b7389;
+    text-decoration: line-through;
+}
+
+/* Priority: colored dot with text, not a badge */
+.priority-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.priority-indicator::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.priority-indicator.priority-high { color: #c8344b; }
+.priority-indicator.priority-medium { color: #b7791f; }
+.priority-indicator.priority-low { color: #3b7dd8; }
+.is-done .priority-indicator { opacity: .65; }
+
+/* Status: soft blue or green pill */
+.status-pill {
+    display: inline-block;
+    padding: 4px 11px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-pill.status-active { background: #e8edfd; color: #3454d1; }
+.status-pill.status-done { background: #e3f5ec; color: #23855a; }
+
+/* Due date */
+.due-today { display: block; font-size: 13px; font-weight: 600; }
+.due-date { display: block; font-size: 13px; white-space: nowrap; }
+.due-secondary { color: #6b7389; font-size: 12px; }
+.due-none { color: #6b7389; white-space: nowrap; }
+
+/* Complete button + Delete icon only */
+.task-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 0;
+}
+
+.task-actions form { display: inline-flex; margin: 0; gap: 0; }
+
+.task-actions .complete-button {
+    padding: 8px 14px;
+    border: 1px solid var(--table-blue);
+    border-radius: 9px;
+    background: var(--table-blue);
+    color: white;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.task-actions .complete-button:hover { background: var(--table-blue-hover); }
+
+.task-actions .delete-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: transparent;
+    color: #6b7389;
+}
+
+.task-actions .delete-button:hover {
+    background: #fdeaed;
+    border-color: var(--red);
+    color: var(--red);
+}
+
+/* No tasks / no results */
+.empty-state {
+    margin: 0 24px 24px;
+    padding: 48px 20px;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    background: var(--table-head);
+    text-align: center;
+}
+
+.empty-state h3 { margin-bottom: 8px; color: var(--text); }
+.empty-state p { margin: 0; color: var(--muted); }
+
+/* 6. Footer */
+footer {
+    grid-column: 1 / -1;
+    padding: 15px;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    color: var(--muted);
+    text-align: center;
+    font-size: 12px;
+}
+
+footer p { margin: 0; }
+
+/* 7. Tablet layout */
+@media (max-width: 800px) {
+    body {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto 1fr auto;
+    }
+
+    header { grid-column: 1; grid-row: 1; padding: 15px 20px; }
+
+    .sidebar {
+        grid-column: 1;
+        grid-row: 2;
+        padding: 10px 16px;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-heading { display: none; }
+    .sidebar nav { flex-direction: row; }
+    .nav-link { padding: 9px 14px; font-size: 13px; }
+    main { grid-column: 1; grid-row: 3; padding: 20px; }
+    footer { grid-column: 1; grid-row: 4; }
+}
+
+/* 8. Mobile: table rows become compact cards */
+@media (max-width: 760px) {
+    .task-list-heading { padding: 20px 16px 0; }
+    .status-tabs { max-width: calc(100% - 32px); margin: 18px 16px; }
+    .status-tabs a { padding: 7px 9px; font-size: 12px; }
+
+    .task-table { display: block; min-width: 0; }
+    .task-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+    }
+
+    .task-table tbody { display: block; }
+    .task-table tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 12px;
+        padding: 16px;
+        border-top: 1px solid var(--border);
+    }
+
+    .task-table tbody td,
+    .task-table tbody td:first-child,
+    .task-table tbody td:last-child {
+        display: block;
+        padding: 0;
+        border: 0;
+    }
+
+    .task-table .c-task { grid-column: 1 / -1; }
+    .task-table .c-priority { grid-column: 1; grid-row: 2; }
+    .task-table .c-status { grid-column: 2; grid-row: 2; justify-self: end; }
+    .task-table .c-due { grid-column: 1; grid-row: 3; align-self: center; }
+    .task-table .c-actions { grid-column: 2; grid-row: 3; }
+}
+
+@media (max-width: 550px) {
+    main { padding: 15px; }
+    main > section { padding: 18px; }
+    main > section:first-child > form { padding: 18px; }
+    .task-summary > div { grid-template-columns: 1fr; gap: 8px; }
+    .task-filters form { grid-template-columns: minmax(0, 1fr); }
+    .task-filters form > div:last-child { grid-column: 1; }
+    .task-actions { gap: 6px; }
+}
